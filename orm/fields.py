@@ -3,17 +3,28 @@ from . import exceptions
 
 
 class Field(object):
+
     default = None
     python_type = object
+    value = None
 
     def __init__(self, default):
-        self._check_value(default)
+        self._set_value(default)
+
+    def _set_value(self, value):
+        """
+        Checks value and set value to value attribute
+        :param value:
+        :return: None
+        """
+        self._check_value(value)
+        self.value = value
 
     def _check_value(self, value):
         """
         Checks value. if values isn't correct raise exception.ValidationError
         :param value:
-        :return:
+        :return: None
         """
         if not self.check_value(value):
             raise exceptions.ValidationError((
@@ -27,11 +38,11 @@ class Field(object):
 
     def check_value(self, value):
         """
-        Checks is value is correct for field. Should be implemented
+        Checks is value is correct for field. Could be overload
         :param value:
         :return: boolean
         """
-        raise NotImplementedError
+        return isinstance(value, self.python_type)
 
     @property
     def sql_type(self):
@@ -40,3 +51,11 @@ class Field(object):
         :return: basestring
         """
         raise NotImplementedError
+
+
+class IntegerField(Field):
+    python_type = int
+
+    @property
+    def sql_type(self):
+        return 'Integer'

@@ -40,3 +40,19 @@ class FieldTestCase(TestCase):
 
         field = IntegerField(1)
         self.assertEquals(field.sql_type, 'Integer')
+
+
+class IntegerFieldTestCase(TestCase):
+
+    def test_wrong_values(self):
+        for value in ('asd', '123', object, 43.12, [1, 2]):
+            with self.assertRaises(exceptions.ValidationError):
+                fields.IntegerField(value)
+
+    def test_correct_value(self):
+        fields.IntegerField(12)
+
+    def test_sql_type(self):
+        field = fields.IntegerField(24)
+        self.assertEquals(field.sql_type, 'Integer')
+
