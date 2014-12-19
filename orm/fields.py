@@ -4,26 +4,25 @@ from . import exceptions
 
 class Field(object):
 
-    default = None
     python_type = object
-    _value = None
+    _default = None
 
     def __init__(self, default):
-        self.value = default
+        self.default = default
 
     @property
-    def value(self):
-        return self._value
+    def default(self):
+        return self._default
 
-    @value.setter
-    def value(self, value):
+    @default.setter
+    def default(self, value):
         """
         Checks value and set value to value attribute
         :param value:
         :return: None
         """
         self.check_value(value)
-        self._value = value
+        self._default = value
 
     def check_value(self, value):
         """

@@ -59,11 +59,11 @@ class IntegerFieldTestCase(TestCase):
     def test_wrong_value_set(self):
         field = fields.IntegerField(1)
         with self.assertRaises(exceptions.ValidationError):
-            field.value = "Blablabla"
+            field.default = "Blablabla"
 
     def test_right_value_set(self):
         field = fields.IntegerField(1)
-        field.value = 50
+        field.default = 50
 
 
 class CharFieldTestCase(TestCase):
@@ -102,7 +102,7 @@ class CharFieldTestCase(TestCase):
     def test_wrong_value_set(self):
         field = fields.CharField("mother", 10)
         with self.assertRaises(exceptions.ValidationError):
-            field.value = object
+            field.default = object
 
         with self.assertRaises(exceptions.ValidationError):
-            field.value = 'abcdefghijklmnopqrstuvwxyz'
+            field.default = 'abcdefghijklmnopqrstuvwxyz'

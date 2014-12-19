@@ -16,3 +16,7 @@ class ValidationError(BaseOrmException):
 
 class InitialError(BaseOrmException):
     pass
+
+
+class NoFieldsError(BaseOrmException):
+    pass
