@@ -6,27 +6,32 @@ class Field(object):
 
     default = None
     python_type = object
-    value = None
+    _value = None
 
     def __init__(self, default):
-        self._set_value(default)
+        self.value = default
 
-    def _set_value(self, value):
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
         """
         Checks value and set value to value attribute
         :param value:
         :return: None
         """
-        self._check_value(value)
-        self.value = value
+        self.check_value(value)
+        self._value = value
 
-    def _check_value(self, value):
+    def check_value(self, value):
         """
         Checks value. if values isn't correct raise exception.ValidationError
         :param value:
         :return: None
         """
-        if not self.check_value(value):
+        if not isinstance(value, self.python_type):
             raise exceptions.ValidationError((
                 "{field_name} value should be "
                 "{python_type_name} not {value_type_name}"
@@ -35,14 +40,6 @@ class Field(object):
                 'python_type_name': self.python_type.__name__,
                 'value_type_name': value.__class__.__name__
             }))
-
-    def check_value(self, value):
-        """
-        Checks is value is correct for field. Could be overload
-        :param value:
-        :return: boolean
-        """
-        return isinstance(value, self.python_type)
 
     @property
     def sql_type(self):
@@ -54,8 +51,37 @@ class Field(object):
 
 
 class IntegerField(Field):
+
     python_type = int
 
     @property
     def sql_type(self):
         return 'Integer'
+
+
+class CharField(Field):
+
+    max_length = 255
+    python_type = basestring
+
+    def __init__(self, default, max_length=None):
+        if not max_length is None:
+            if not isinstance(max_length, int) or max_length < 1:
+                raise exceptions.InitialError(
+                    "max_length should be int and greater then 0"
+                )
+            self.max_length = max_length
+        super(CharField, self).__init__(default)
+
+    def check_value(self, value):
+        super(CharField, self).check_value(value)
+        if len(value) > self.max_length:
+            raise exceptions.ValidationError(
+                "Value shouldn't be longer then {} chars".format(
+                    self.max_length
+                )
+            )
+
+    @property
+    def sql_type(self):
+        return 'Varchar({})'.format(self.max_length)

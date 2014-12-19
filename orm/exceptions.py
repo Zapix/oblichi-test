@@ -13,3 +13,6 @@ class BaseOrmException(Exception):
 class ValidationError(BaseOrmException):
     pass
 
+
+class InitialError(BaseOrmException):
+    pass
